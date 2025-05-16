@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.mikeapp.democomposenav.data.MyRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,6 +54,7 @@ fun BottomNavBar(navController: NavHostController) {
 fun HomeScreen(navController: NavController, paddingValues: PaddingValues) {
     var isRefreshing by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val repository = MyRepository()
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -69,11 +72,20 @@ fun HomeScreen(navController: NavController, paddingValues: PaddingValues) {
                 .fillMaxSize()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
+            Spacer(modifier = Modifier.padding(128.dp))
             Text("Home Screen")
             Button(onClick = { navController.navigate("details") }) {
                 Text("Go to Details")
+            }
+            Spacer(modifier = Modifier.padding(24.dp))
+            Button(onClick = {
+                coroutineScope.launch {
+                    repository.callGet()
+                }
+            }) {
+                Text("Fire @GET Api")
             }
         }
     }
